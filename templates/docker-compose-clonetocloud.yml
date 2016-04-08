@@ -1,0 +1,43 @@
+version: '2'
+
+services:
+  clonetocloud:
+    image: aguamala/clonetocloud:{{ clonetocloud.tag }}
+    container_name: clonetocloud
+    restart: {{ clonetocloud.restart }}
+    volumes:
+      - /etc/localtime:/etc/localtime
+{% if (clonetocloud_lsyncd is defined and clonetocloud_lsyncd is iterable) %}
+      - ./lsyncd.conf:/lsyncd.conf
+{% endif %}
+{% if (clonetocloud_rclone is defined and clonetocloud_rclone is iterable) %}
+      - ./rclone.cfg:/root/.rclone.cfg
+{% endif %}
+
+{% if (clonetocloud.volumes is defined and clonetocloud.volumes is iterable) %}
+{% for volume in clonetocloud.volumes  %}
+      - {{ volume }}
+{% endfor %}
+{% endif %}
+{% if (clonetocloud.volumes_from is defined and clonetocloud.volumes_from is iterable) %}
+    volumes_from:
+{% for volume in clonetocloud.volumes_from  %}
+      - {{ volume }}
+{% endfor %}
+{% endif %}
+{% if (clonetocloud_rclone is undefined) %}
+    environment:
+      - RCLONE_ACCESS_KEY_ID: {{ clonetocloud_rclone_access_key }}
+      - RCLONE_SECRET_ACCESS_KEY: { clonetocloud_rclone.secret_key }}
+      - RCLONE_TYPE: {{ clonetocloud_rclone.type }}
+{% endif %}
+{% if (clonetocloud.env_vars is defined and clonetocloud.env_vars is iterable) %}
+{% for env_var in clonetocloud.env_vars  %}
+      - {{ env_var }}
+{% endfor %}
+{% endif %}
+
+networks:
+  default:
+    external:
+      name: {{ clonetocloud_docker_network }}

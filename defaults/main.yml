@@ -1,34 +1,56 @@
 ---
 # defaults file for ansible-role-clonetocloud
 
-#use ansible vault
-#clonetocloud_rclone_access_key:
-#clonetocloud_rclone_secret_key:
-#clonetocloud_rclone_type:
 
-#clonetocloud_docker_network:
+#clonetocloud_user:
+#clonetocloud_dir:
+#clonetocloud_pull:
+
+#clonetocloud_docker_compose_tag:
+#clonetocloud_docker_compose_restart:
+clonetocloud_docker_compose_volumes: []
+clonetocloud_docker_compose_volumes_from: []
+#clonetocloud_docker_compose_env_vars
+#clonetocloud_docker_compose_network:
+
 
 #docker-compose settings
 clonetocloud:
-  tag: latest
-  restart: unless-stopped
-  volumes: {{ clonetocloud_volumes | default(omit) }}
-  volumes_from: {{ clonetocloud_volumes_from | default(omit) }}
-  env_vars: {{ clonetocloud_env_vars | default(omit) }}
+  user: "{{ clonetocloud_user | default('centos') }}"
+  dir: "{{ clonetocloud_dir | default ('clonetocloud') }}"
+  pull: "{{ clonetocloud_pull | default('no') }}"
+
+  docker_compose:
+    tag: "{{ clonetocloud_docker_compose_tag | default('latest') }}"
+    restart: "{{ clonetocloud_docker_compose_restart | default('unless-stopped') }}"
+    volumes: "{{ clonetocloud_docker_compose_volumes | default([]) }}"
+    volumes_from: "{{ clonetocloud_docker_compose_volumes_from | default([]) }}"
+    env_vars: "{{ clonetocloud_docker_compose_env_vars | default([]) }}"
+    network: "{{ clonetocloud_docker_compose_network | default([]) }}"
+
+
+#use ansible vault
+clonetocloud_rclone_access_key:
+clonetocloud_rclone_secret_key: 
+#clonetocloud_rclone_type:
+
 
 #override lsyncd conf
 clonetocloud_lsyncd:
-  - name: sync
+  - name: synclocal
     type: backup
-    source: /local
-    target: remote:gex.pruebas
+    source: /home/centos/test
+    #volumes_from: container
+    volumes: /home/centos/test:/home/centos/test
+    target: remote:gex.pruebas/agencias
     onstartup_sync: yes
     #everything_except:
     #nothing_except:
 
 #override rclone conf
-clonetocloud_rclone:
-  - name: remote
-    access_key: {{ clonetocloud_rclone_access_key | default(omit) }}
-    secret_key: {{ clonetocloud_rclone_secret_key | default(omit) }}
-    type: {{ clonetocloud_rclone_type | default('s3') }}
+
+#clonetocloud_rclone:
+#  - name: remote
+#    access_key: "{{ clonetocloud_rclone_access_key | default(omit) }}"
+#    secret_key: "{{ clonetocloud_rclone_secret_key | default(omit) }}"
+#    type: "{{ clonetocloud_rclone_type | default('s3') }}"

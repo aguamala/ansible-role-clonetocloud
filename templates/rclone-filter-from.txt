@@ -1,0 +1,5 @@
+{% for item in   %}
+{% if (sync.volumes_from is defined) %}
+      - {{ sync.volumes_from }}
+{% endif %}
+{% endfor %}

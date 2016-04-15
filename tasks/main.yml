@@ -15,6 +15,10 @@
     - docker_compose
     - lsyncd_conf
 
+- name: create oncreate filter-from file
+  template: src=rclone-filter-from.txt
+  when: clonetocloud_rclone_oncreate_filters is defined and clonetocloud_rclone_oncreate_filters is iterable
+
 - name: docker-compose pull
   shell: /usr/bin/docker-compose pull chdir="{{ clonetocloud.dir }}"
   when: clonetocloud.pull == "yes"

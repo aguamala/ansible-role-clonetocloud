@@ -1,18 +1,18 @@
 ---
 # defaults file for ansible-role-clonetocloud
 
-
+#CLONETOCLOUD
 #clonetocloud_user:
 #clonetocloud_dir:
 #clonetocloud_pull:
 
+#DOCKER COMPOSE
 #clonetocloud_docker_compose_tag:
 #clonetocloud_docker_compose_restart:
-clonetocloud_docker_compose_volumes: []
-clonetocloud_docker_compose_volumes_from: []
+#enable if lsycnd dirs come from other containers
+clonetocloud_docker_compose_enable_volumes_from: false
 #clonetocloud_docker_compose_env_vars
 #clonetocloud_docker_compose_network:
-
 
 #docker-compose settings
 clonetocloud:
@@ -24,33 +24,51 @@ clonetocloud:
     tag: "{{ clonetocloud_docker_compose_tag | default('latest') }}"
     restart: "{{ clonetocloud_docker_compose_restart | default('unless-stopped') }}"
     volumes: "{{ clonetocloud_docker_compose_volumes | default([]) }}"
-    volumes_from: "{{ clonetocloud_docker_compose_volumes_from | default([]) }}"
     env_vars: "{{ clonetocloud_docker_compose_env_vars | default([]) }}"
     network: "{{ clonetocloud_docker_compose_network | default([]) }}"
 
 
 #use ansible vault
+#rclone single remote see for details: https://hub.docker.com/r/aguamala/clonetocloud/
 clonetocloud_rclone_access_key:
-clonetocloud_rclone_secret_key: 
+clonetocloud_rclone_secret_key:
 #clonetocloud_rclone_type:
+#clonetocloud_rclone_oncreate_filters:
+  #include:
+  #exclude:
+#clonetocloud_rclone_ondelete_filters:
+  #include:
+  #exclude:
+#clonetocloud_rclone_onmove_filters:
+  #include:
+  #exclude:
+#clonetocloud_rclone_onmodify_filters:
+  #include:
+  #exclude:
+#--filter-from
 
 
-#override lsyncd conf
+#use ansible vault
+#override rclone conf multiple remotes
+#clonetocloud_rclone:
+#  - name: remote
+#    access_key: "{{ clonetocloud_rclone_access_key  }}"
+#    secret_key: "{{ clonetocloud_rclone_secret_key  }}"
+#    type: "{{ clonetocloud_rclone_type | default('s3') }}"
+
+
+#lsycnd single sync
+#clonetocloud_lsyncd_source:
+#clonetocloud_lsyncd_target:
+
+#override lsyncd conf multiple syncs or backups
 clonetocloud_lsyncd:
   - name: synclocal
     type: backup
-    source: /home/centos/test
+    source: /home/centos   #equals host volumes or container volumes_from source
     #volumes_from: container
     volumes: /home/centos/test:/home/centos/test
     target: remote:gex.pruebas/agencias
     onstartup_sync: yes
     #everything_except:
     #nothing_except:
-
-#override rclone conf
-
-#clonetocloud_rclone:
-#  - name: remote
-#    access_key: "{{ clonetocloud_rclone_access_key | default(omit) }}"
-#    secret_key: "{{ clonetocloud_rclone_secret_key | default(omit) }}"
-#    type: "{{ clonetocloud_rclone_type | default('s3') }}"

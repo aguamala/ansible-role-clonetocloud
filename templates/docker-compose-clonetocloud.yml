@@ -2,9 +2,9 @@ version: '2'
 
 services:
   clonetocloud:
-    image: aguamala/clonetocloud:{{ clonetocloud.docker_compose.tag }}
+    image: aguamala/clonetocloud:{{ clonetocloud.docker_compose.tag | mandatory }}
     container_name: clonetocloud
-    restart: {{ clonetocloud.docker_compose.restart }}
+    restart: {{ clonetocloud.docker_compose.restart | mandatory }}
     volumes:
       - /etc/localtime:/etc/localtime
 {% if (clonetocloud_lsyncd is defined and clonetocloud_lsyncd is iterable and clonetocloud_lsyncd|length > 0) %}
@@ -19,28 +19,40 @@ services:
 {% endfor %}
 {% endif %}
 {% for sync in clonetocloud_lsyncd  %}
-{% if (sync.volume is defined) %}
-      - {{ volume }}
+{% if (sync.volumes is defined) %}
+      - {{ sync.volumes }}
 {% endif %}
 {% endfor %}
 
-{% if (clonetocloud.docker_compose.volumes_from is defined and clonetocloud.docker_compose.volumes_from is iterable and clonetocloud.docker_compose.volumes_from|length > 0) %}
+{% if clonetocloud_docker_compose_enable_volumes_from %}
     volumes_from:
-{% for volume in clonetocloud.docker_compose.volumes_from  %}
-      - {{ volume }}
+{% for sync in clonetocloud_lsyncd  %}
+{% if (sync.volumes_from is defined) %}
+      - {{ sync.volumes_from }}
+{% endif %}
 {% endfor %}
 {% endif %}
 
-
-{% if (clonetocloud_rclone is undefined) %}
+{% if (clonetocloud_lsyncd is undefined and clonetocloud_rclone is undefined) %}
     environment:
-      RCLONE_ACCESS_KEY_ID: {{ clonetocloud_rclone_access_key }}
-      RCLONE_SECRET_ACCESS_KEY: {{ clonetocloud_rclone_secret_key }}
+      LSYNCD_SOURCE: {{ clonetocloud_rclone_access_key | mandatory }}
+      LSYNCD_TARGET: {{ clonetocloud_rclone_secret_key | mandatory }}
+      RCLONE_ACCESS_KEY_ID: {{ clonetocloud_rclone_access_key | mandatory }}
+      RCLONE_SECRET_ACCESS_KEY: {{ clonetocloud_rclone_secret_key | mandatory }}
+      RCLONE_TYPE: {{ clonetocloud_rclone_type | default('s3') }}
+{% elif (clonetocloud_lsyncd is undefined) %}
+    environment:
+      LSYNCD_SOURCE: {{ clonetocloud_lsyncd_source | mandatory }}
+      LSYNCD_TARGET: {{ clonetocloud_lsyncd_target | mandatory }}
+{% elif (clonetocloud_rclone is undefined) %}
+    environment:
+      RCLONE_ACCESS_KEY_ID: {{ clonetocloud_rclone_access_key | mandatory }}
+      RCLONE_SECRET_ACCESS_KEY: {{ clonetocloud_rclone_secret_key | mandatory }}
       RCLONE_TYPE: {{ clonetocloud_rclone_type | default('s3') }}
 {% endif %}
 {% if (clonetocloud.docker_compose.env_vars is defined and clonetocloud.docker_compose.env_vars is iterable and clonetocloud.docker_compose.env_vars|length > 0) %}
 {% for env_var in clonetocloud.docker_compose.env_vars  %}
-      - {{ env_var }}
+      {{ env_var }}
 {% endfor %}
 {% endif %}
 

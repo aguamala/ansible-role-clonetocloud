@@ -2,12 +2,16 @@
 # tasks file for ansible-role-clonetocloud
 
 - name: create docker-compose dir
-  file: path="{{ clonetocloud.dir }}"  state=directory recurse=yes owner={{ clonetocloud.user }} group={{ clonetocloud.user }}
+  file: path="{{ clonetocloud.dir }}/filters"  state=directory recurse=yes owner={{ clonetocloud.user }} group={{ clonetocloud.user }}
   tags: docker_compose
 
 - name: copy docker_compose
   template: src=docker-compose-clonetocloud.yml dest="{{ clonetocloud.dir }}/docker-compose.yml"  owner={{ clonetocloud.user }} group={{ clonetocloud.user }}
   tags: docker_compose
+
+- name: create filters file
+  template: src=rclone-filter-from.txt dest="{{ clonetocloud.dir }}/filters/{{ item.name }}-filter-from.txt" owner={{ clonetocloud.user }} group={{ clonetocloud.user }}
+  with_items: clonetocloud_lsyncd
 
 - name: copy lsyncd conf
   template: src=lsyncd.conf dest="{{ clonetocloud.dir }}/lsyncd.conf"  owner={{ clonetocloud.user }} group={{ clonetocloud.user }}

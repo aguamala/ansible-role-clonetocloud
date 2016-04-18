@@ -1,5 +1,14 @@
-{% for item in   %}
-{% if (sync.volumes_from is defined) %}
-      - {{ sync.volumes_from }}
-{% endif %}
+# a sample exclude rule file
+{% if item.rclone_filters is defined %}
+{% if (item.rclone_filters.include is defined and item.rclone_filters.include is iterable and  item.rclone_filters.include|length > 0) %}
+{% for include in item.rclone_filters.include  %}
++ {{ include }}
 {% endfor %}
+{% endif %}
+
+{% if (item.rclone_filters.exclude is defined and item.rclone_filters.exclude is iterable and  item.rclone_filters.exclude|length > 0) %}
+{% for exclude in item.rclone_filters.exclude  %}
+- {{ exclude }}
+{% endfor %}
+{% endif %}
+{% endif %}

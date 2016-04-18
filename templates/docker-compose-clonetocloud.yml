@@ -7,6 +7,7 @@ services:
     restart: {{ clonetocloud.docker_compose.restart | mandatory }}
     volumes:
       - /etc/localtime:/etc/localtime
+      - ./filters:/filters
 {% if (clonetocloud_lsyncd is defined and clonetocloud_lsyncd is iterable and clonetocloud_lsyncd|length > 0) %}
       - ./lsyncd.conf:/lsyncd.conf
 {% endif %}

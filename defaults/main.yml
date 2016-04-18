@@ -31,21 +31,9 @@ clonetocloud:
 #use ansible vault
 #rclone single remote see for details: https://hub.docker.com/r/aguamala/clonetocloud/
 clonetocloud_rclone_access_key:
-clonetocloud_rclone_secret_key:
+clonetocloud_rclone_secret_key: 
 #clonetocloud_rclone_type:
-#clonetocloud_rclone_oncreate_filters:
-  #include:
-  #exclude:
-#clonetocloud_rclone_ondelete_filters:
-  #include:
-  #exclude:
-#clonetocloud_rclone_onmove_filters:
-  #include:
-  #exclude:
-#clonetocloud_rclone_onmodify_filters:
-  #include:
-  #exclude:
-#--filter-from
+
 
 
 #use ansible vault
@@ -65,10 +53,12 @@ clonetocloud_rclone_secret_key:
 clonetocloud_lsyncd:
   - name: synclocal
     type: backup
-    source: /home/centos   #equals host volumes or container volumes_from source
+    source: /home/centos/prueba  #equals host volumes or container volumes_from source
     #volumes_from: container
-    volumes: /home/centos/test:/home/centos/test
+    volumes: /home/centos/prueba:/home/centos/prueba
     target: remote:gex.pruebas/agencias
     onstartup_sync: yes
-    #everything_except:
-    #nothing_except:
+    #rclone_filters:
+      #include:
+      #exclude:
+      #  - '*.002'

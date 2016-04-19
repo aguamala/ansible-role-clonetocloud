@@ -16,7 +16,7 @@
 clonetocloud:
   user: "{{ clonetocloud_user | default('centos') }}"
   dir: "{{ clonetocloud_dir | default ('clonetocloud') }}"
-  pull: "{{ clonetocloud_pull | default('no') }}"
+  pull: "{{ clonetocloud_pull | default('yes') }}"
 
   docker_compose:
     tag: "{{ clonetocloud_docker_compose_tag | default('latest') }}"

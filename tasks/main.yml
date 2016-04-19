@@ -27,5 +27,5 @@
   shell: /usr/bin/docker-compose pull chdir="{{ clonetocloud.dir }}"
   when: clonetocloud.pull == "yes"
 
-#- name: docker-compose up
-#  shell: /usr/bin/docker-compose up -d chdir="{{ clonetocloud.dir }}"
+- name: docker-compose up
+  shell: /usr/bin/docker-compose up -d chdir="{{ clonetocloud.dir }}"

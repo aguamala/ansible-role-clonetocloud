@@ -9,8 +9,6 @@
 #DOCKER COMPOSE
 #clonetocloud_docker_compose_tag:
 #clonetocloud_docker_compose_restart:
-#enable if lsycnd dirs come from other containers
-clonetocloud_docker_compose_enable_volumes_from: false
 #clonetocloud_docker_compose_env_vars
 #clonetocloud_docker_compose_network:
 
@@ -27,14 +25,14 @@ clonetocloud:
     env_vars: "{{ clonetocloud_docker_compose_env_vars | default([]) }}"
     network: "{{ clonetocloud_docker_compose_network | default([]) }}"
 
-
 #use ansible vault
 #rclone single remote see for details: https://hub.docker.com/r/aguamala/clonetocloud/
 clonetocloud_rclone_access_key:
-clonetocloud_rclone_secret_key: 
+clonetocloud_rclone_secret_key:
 #clonetocloud_rclone_type:
-
-
+#clonetocloud_rclone_s3_region:
+#clonetocloud_rclone_s3_endpoint:
+#clonetocloud_rclone_s3_location_constraint:
 
 #use ansible vault
 #override rclone conf multiple remotes
@@ -45,18 +43,22 @@ clonetocloud_rclone_secret_key:
 #    type: "{{ clonetocloud_rclone_type | default('s3') }}"
 
 
-#lsycnd single sync
+#lsyncd single sync
 #clonetocloud_lsyncd_source:
 #clonetocloud_lsyncd_target:
+
+
+#enable if lsycnd dirs come from other containers
+clonetocloud_docker_compose_enable_volumes_from: false
 
 #override lsyncd conf multiple syncs or backups
 clonetocloud_lsyncd:
   - name: synclocal
     type: backup
-    source: /home/centos/prueba  #equals host volumes or container volumes_from source
+    source: /home/centos/test  #equals host volumes or container volumes_from source
     #volumes_from: container
-    volumes: /home/centos/prueba:/home/centos/prueba
-    target: remote:gex.pruebas/agencias
+    volumes: /home/centos/test:/home/centos/test
+    target: remote:s3test/agencias
     onstartup_sync: yes
     #rclone_filters:
       #include:

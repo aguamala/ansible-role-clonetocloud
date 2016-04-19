@@ -50,6 +50,9 @@ services:
       RCLONE_ACCESS_KEY_ID: {{ clonetocloud_rclone_access_key | mandatory }}
       RCLONE_SECRET_ACCESS_KEY: {{ clonetocloud_rclone_secret_key | mandatory }}
       RCLONE_TYPE: {{ clonetocloud_rclone_type | default('s3') }}
+      RCLONE_S3_REGION: {{ clonetocloud_rclone_s3_region | default('') }}
+      RCLONE_S3_ENDPOINT: {{ clonetocloud_rclone_s3_endpoint | default('') }}
+      RCLONE_S3_LOCATION_CONSTRAINT: {{ clonetocloud_rclone_s3_location_constraint | default('') }}
 {% endif %}
 {% if (clonetocloud.docker_compose.env_vars is defined and clonetocloud.docker_compose.env_vars is iterable and clonetocloud.docker_compose.env_vars|length > 0) %}
 {% for env_var in clonetocloud.docker_compose.env_vars  %}
